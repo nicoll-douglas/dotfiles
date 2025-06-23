@@ -1,0 +1,2 @@
+#!/bin/bash
+xdotool type $(cat ~/bookmarks | dmenu -i -l 50 | awk '{print $1}')
