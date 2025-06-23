@@ -11,7 +11,8 @@ if command -v stow > /dev/null 2>&1; then
   echo "stow is installed."
 else
   echo "installing stow..."
-  sudo apt update && sudo apt install stow
+  sudo apt update
+  sudo apt install stow
 fi
 
 # change directory to here
@@ -26,7 +27,11 @@ done
 
 # apply gsettings config
 if command -v gsettings >/dev/null 2>&1; then
+  echo "Most likely using a desktop so applying gsettings config..."
   source ./gsettings.sh
+
+  echo "Installing dmenu"
+  sudo apt install dmenu
 else
-  echo "gsettings is not installed, not applying configurations"
+  echo "Most likely not using a desktop so not applying gsettings config"
 fi
