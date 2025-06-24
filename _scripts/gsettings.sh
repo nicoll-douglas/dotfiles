@@ -15,7 +15,7 @@ current_schema=""
 echo "Applying rules in $config_basename to gsettings..."
 
 # loop over config lines
-while IFS= read -r line; do
+while IFS= read -r line || [[ -n "$line" ]]; do
   # skip comments and empty lines
   [[ -z "$line" || "$line" =~ ^# ]] && continue
 
