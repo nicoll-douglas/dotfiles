@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=discord
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Discord
+Comment=Start Discord on login

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=spotify
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Spotify
+Comment=Start Spotify on login
