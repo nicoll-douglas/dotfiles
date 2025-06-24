@@ -1,14 +1,18 @@
 #!/bin/bash
+# parses and applies ../_conf/gsettings.conf and ../_conf/keybinds.conf with the gsettings command
 
 set -e
-
-config_file="gsettings.conf"
-current_schema=""
 
 # change directory to here
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-echo "Applying gsettings configuration..."
+# STEP 1: Apply gsettings rules defined in ../_conf/gsettings.conf
+
+config_file="../_conf/gsettings.conf"
+config_basename=$(basename $config_file)
+current_schema=""
+
+echo "Applying rules in $config_basename to gsettings..."
 
 # loop over config lines
 while IFS= read -r line; do
@@ -20,11 +24,15 @@ while IFS= read -r line; do
     current_schema="${BASH_REMATCH[1]}"
     keys=$(gsettings list-keys "$current_schema")
 
-    echo "Resetting all keys in $current_schema..."
+    echo "Resetting all keys in schema '$current_schema'..."
     
     for key in $keys; do
-      gsettings set "$current_schema" "$key" "[]" || true
+      if ! gsettings set "$current_schema" "$key" "[]"; then
+        echo "Failed to reset key '$key' in schema '$current_schema'."
+      fi
     done
+
+    echo "Applying configured keys for '$current_schema' defined in $config_basename..."
 
     continue
   fi
@@ -39,18 +47,25 @@ while IFS= read -r line; do
 
   # Run the gsettings command
   if [[ -n "$current_schema" ]]; then
-    gsettings set "$current_schema" "$key" "$value" || true
+    if ! gsettings set "$current_schema" "$key" "$value"; then
+      echo "Failed to set value '$value' for key '$key' in schema '$current_schema'."
+    fi
   fi
 
 done < "$config_file"
 
-config_file="keybinds.conf"
+echo "Finished applying rules in $config_basename to gsettings."
+
+# STEP 2: Apply gsettings custom keybinds defined in ../_conf/keybinds.conf
+
+config_file="../_conf/keybinds.conf"
+config_basename=$(basename $config_file)
 base_path="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
 schema="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
 paths=()
 index=0
 
-echo "Applying custom keybindings to gsettings"
+echo "Applying keybinds in $config_basename to gsettings..."
 
 while IFS= read -r line || [[ -n "$line" ]]; do
   # Skip empty lines or comments
@@ -70,7 +85,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   gsettings set $schema:$path command "$command"
   gsettings set $schema:$path binding "$shortcut"
 
-  ((index++))
+  ((index+=1))
 done < "$config_file"
 
 # Join paths
@@ -81,4 +96,4 @@ custom_list+="]"
 # Apply the full custom-keybindings list at once
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "$custom_list"
 
-echo "Applied all custom keybindings."
+echo "Finished applying keybinds in $config_basename to gsettings."

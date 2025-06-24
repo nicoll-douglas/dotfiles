@@ -1,37 +1,15 @@
-# require root
-if [ "$EUID" -ne 0 ]; then
-  echo "run as root."
-  exit 1
-fi
+#!/bin/bash
+# installs necessary packages to run setup script and user binaries
 
-set -e
+here="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+cd $here
 
-# make sure `stow` is installed
-if command -v stow > /dev/null 2>&1; then
-  echo "stow is installed."
-else
-  echo "installing stow..."
-  sudo apt update
-  sudo apt install stow
-fi
+packages_list=./_conf/packages
+packages=$(tr '\n' ' ' < $packages_list)
 
-# change directory to here
-cd "$(dirname "${BASH_SOURCE[0]}")"
+echo "Updating system package list"
+sudo apt update
 
-# run stow for all directories and target home directory
-for item in $PWD; do
-  if [ -d "$item" ]; then
-    stow --target=${HOME} $(basename $item)
-  fi
-done
-
-# apply gsettings config
-if command -v gsettings >/dev/null 2>&1; then
-  echo "Most likely using a desktop so applying gsettings config..."
-  source ./gsettings.sh
-
-  echo "Installing dmenu"
-  sudo apt install dmenu
-else
-  echo "Most likely not using a desktop so not applying gsettings config"
-fi
+echo "Installing packages declared in _conf/packages:"
+echo $packages
+sudo apt install $packages
