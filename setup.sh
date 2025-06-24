@@ -6,3 +6,7 @@ source ./_scripts/stow.sh
 
 # apply gsettings config
 source ./_scripts/gsettings.sh
+
+# refresh bash
+source ~/.bashrc
+echo "Freshly sourced .bashrc"
