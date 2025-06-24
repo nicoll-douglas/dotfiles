@@ -1,2 +1,21 @@
 #!/bin/bash
-xdotool type $(cat ~/bookmarks | dmenu -i -l 50 | awk '{print $1}')
+
+# script to type out saved bookmarks
+
+bookmarks="$HOME/bookmarks"
+local_bookmarks="$HOME/.local/bookmarks"
+
+# get all lines from bookmarks file
+lines=$(cat "$bookmarks")
+
+# append lines efrom local bookmarks if it exists
+if [[ -f "$local_bookmarks" ]]; then
+  lines+=$'\n'
+  lines+=$(cat "$local_bookmarks")
+fi
+
+# 1. pipe the lines into dmenu to get a selectable list
+# 2. get the resulting selection and get the first element with awk (the bookmark)
+# 3. type out the first element (bookmark) with xdotool type
+
+xdotool type $(echo "$lines" | dmenu -i -l 50 | awk '{print $1}')
