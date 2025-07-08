@@ -1,2 +1,2 @@
-alias editdot='code ~/dotfiles && exit'
+alias editdot='code ~/dotfiles'
 alias lunarclient='~/Applications/lunar-client.AppImage'
