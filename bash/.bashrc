@@ -1,3 +1,5 @@
+# default bash config with some minor edits
+
 # ----- environment ----- #
 if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
