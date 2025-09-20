@@ -1,12 +1,12 @@
 #!/bin/bash
-# installs apt and snap packages
+# installs apt and snap packages defined in ../_conf/packages.conf
 
 set -e
 
 here="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
 cd $here
 
-config_file="./_conf/packages.conf"
+config_file="../_conf/packages.conf"
 section=""
 
 while IFS= read -r line || [[ -n "$line" ]]; do

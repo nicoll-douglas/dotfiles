@@ -79,7 +79,6 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   [[ -z "$line" || "$line" =~ ^# ]] && continue
 
   # Parse name, command, shortcut into variables from lines
-  # lines are formatted as such: 'type_bookmark | "/home/jiggy/bin/type_bookmark" | <Super>f'
   IFS='|' read -r name command shortcut <<< "$line"
   name=$(echo "$name" | xargs)
   command=$(echo "$command" | xargs)
